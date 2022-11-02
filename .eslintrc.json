@@ -1,8 +1,84 @@
 {
-    "extends": "eslint:recommended",
     "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "security", "import"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:security/recommended",
+      "plugin:import/recommended",
+      "plugin:import/typescript"
+    ],
+    "ignorePatterns": [
+      "**/out/**",
+      "**/dist/**",
+      "**/lib/**",
+      "**/node_modules/**",
+      "**/webpack.*.js",
+      "**/products/**"
+    ],  
     "env": {
         "browser": true,
         "node": true 
+    },
+    "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true
+          }
+        }
+    },
+    "rules": {
+        "no-inner-declarations": "off",
+        "semi": "off",
+        "@typescript-eslint/semi": "error",
+        "curly": "warn",
+        "eqeqeq": "warn",
+        "no-throw-literal": "warn",
+        "prefer-const": "warn",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/interface-name-prefix": [
+          "off",
+          "always",
+          {
+            "prefixWithI": "always"
+          }
+        ],
+        "@typescript-eslint/no-use-before-define": [
+          "warn",
+          {
+            "functions": false,
+            "classes": false
+          }
+        ],
+        // Use warn, because some libs don't provide type definitions
+        "@typescript-eslint/no-var-requires": "warn",
+        "@typescript-eslint/member-delimiter-style": [
+          "error",
+          {
+            "multiline": {
+              "delimiter": "semi",
+              "requireLast": true
+            },
+            "singleline": {
+              "delimiter": "semi",
+              "requireLast": false
+            }
+          }
+        ],
+    
+        "@typescript-eslint/explicit-function-return-type": [
+          "warn",
+          {
+            "allowExpressions": true
+          }
+        ],
+    
+        "@typescript-eslint/no-empty-function": "warn"
     }
 }
+

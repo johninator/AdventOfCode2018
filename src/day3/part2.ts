@@ -1,6 +1,6 @@
-import { FabricReader, Fabric } from "../reader/reader";
+import { FabricReader, Fabric } from '../reader/reader';
 
-const reader = new FabricReader("../inputs/input3.txt");
+const reader = new FabricReader('../inputs/input3.txt');
 const fabrics = reader.read();
 
 computeResult(fabrics);
@@ -9,17 +9,18 @@ type FabricSet = Set<Fabric>;
 
 function computeResult(fabrics: Fabric[]): number {
     const fabricMax = computeMaxFabric(fabrics);
-    let votes: FabricSet[] = new Array(fabricMax.sizeX * fabricMax.sizeY);
-    for (let i = 0; i < votes.length; ++i) { votes[i] = new Set<Fabric>();}
+    const votes: FabricSet[] = new Array(fabricMax.sizeX * fabricMax.sizeY);
+    for (let i = 0; i < votes.length; ++i) {
+        votes[i] = new Set<Fabric>();
+    }
 
-    let fabricIds: Set<number> = insertVotes(votes, fabrics, fabricMax.sizeX);
+    const fabricIds: Set<number> = insertVotes(votes, fabrics, fabricMax.sizeX);
     console.log(fabricIds);
 
     return 0;
 }
 
 function computeMaxFabric(fabrics: Fabric[]): Fabric {
-
     const fabricX = fabrics.reduce((prev, curr) => {
         return curr.coordX + curr.sizeX > prev.coordX + prev.sizeX ? curr : prev;
     });
@@ -36,8 +37,7 @@ function computeMaxFabric(fabrics: Fabric[]): Fabric {
 }
 
 function insertVotes(votes: FabricSet[], fabrics: Fabric[], sizeX_max: number): Set<number> {
-
-    let fabricIds = new Set<number>();
+    const fabricIds = new Set<number>();
     fabrics.forEach((fabric) => {
         if (fabric.id !== undefined) {
             fabricIds.add(fabric.id);
@@ -45,7 +45,6 @@ function insertVotes(votes: FabricSet[], fabrics: Fabric[], sizeX_max: number): 
     });
 
     votes.forEach((val: FabricSet, index) => {
-
         const indexX = index % sizeX_max;
         const indexY = Math.floor(index / sizeX_max);
 
@@ -56,23 +55,20 @@ function insertVotes(votes: FabricSet[], fabrics: Fabric[], sizeX_max: number): 
         }
 
         if (votes[index].size > 1) {
-            votes[index].forEach(fabric => {
+            votes[index].forEach((fabric) => {
                 fabricIds.delete(fabric.id!);
             });
         }
-
     }, votes);
 
     return fabricIds;
 }
 
 function checkIfPointIsInsideFabric(coordX: number, coodY: number, fabric: Fabric): boolean {
-    return (coordX >= fabric.coordX &&
+    return (
+        coordX >= fabric.coordX &&
         coordX < fabric.coordX + fabric.sizeX &&
         coodY >= fabric.coordY &&
-        coodY < fabric.coordY + fabric.sizeY);
+        coodY < fabric.coordY + fabric.sizeY
+    );
 }
-
-
-
-
