@@ -1,27 +1,27 @@
 const { readFileSync } = require('fs');
 
 abstract class Reader {
-    constructor(public filename: string) {
-
+    constructor(public filename: string){
+        this.filename = filename;
     }
     abstract read(): any;
-};
+}
 
 
 export interface NumberArray {
     numbers: number[];
-};
+}
 export class NumberReader extends Reader {
     read(): NumberArray {
         const fileContent = readFileSync(this.filename, 'utf-8');
         const numbers = fileContent.split(/\r?\n/).map((value: string) => { return parseInt(value); });
         return { numbers };
     }
-};
+}
 
 export interface StringArray {
     strings: string[];
-};
+}
 
 export class StringReader extends Reader {
     read(): StringArray {
@@ -29,7 +29,7 @@ export class StringReader extends Reader {
         const strings = fileContent.split(/\r?\n/).map((value: string) => { return value; });
         return { strings };
     }
-};
+}
 
 export interface Fabric {
     coordX: number;
@@ -37,7 +37,7 @@ export interface Fabric {
     sizeX: number;
     sizeY: number;
     id?: number;
-};
+}
 
 export class FabricReader extends Reader {
     read(): Fabric[] {
@@ -64,6 +64,6 @@ export class FabricReader extends Reader {
 
         return fabrics;
     }
-};
+}
 
 

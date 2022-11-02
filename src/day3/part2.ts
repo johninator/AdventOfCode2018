@@ -5,7 +5,7 @@ const fabrics = reader.read();
 
 computeResult(fabrics);
 
-type FabricSet = Set<Fabric>;;
+type FabricSet = Set<Fabric>;
 
 function computeResult(fabrics: Fabric[]): number {
     const fabricMax = computeMaxFabric(fabrics);
