@@ -56,7 +56,9 @@ function insertVotes(votes: FabricSet[], fabrics: Fabric[], sizeX_max: number): 
 
         if (votes[index].size > 1) {
             votes[index].forEach((fabric) => {
-                fabricIds.delete(fabric.id!);
+                if (fabric.id !== undefined) {
+                    fabricIds.delete(fabric.id);
+                }
             });
         }
     }, votes);

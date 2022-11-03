@@ -1,12 +1,13 @@
 const { readFileSync } = require('fs');
 
-abstract class Reader {
+export abstract class Reader {
     constructor(public filename: string){
         this.filename = filename;
     }
-    abstract read(): any;
+    read(): any {
+        return readFileSync(this.filename, 'utf-8');
+    }
 }
-
 
 export interface NumberArray {
     numbers: number[];
