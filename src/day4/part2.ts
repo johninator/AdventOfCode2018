@@ -14,9 +14,9 @@ interface GuardTimeEntry {
 function computeResult(guardInfosUnordered: GuardInfo[]): void {
     const guardInfos = sortGuardInfos(guardInfosUnordered);
     const minutesPerGuard = computeMinutesPerGuard(guardInfos);
-    const idGuardSleepiest = findSleepiestGuard(minutesPerGuard);
-    const sleepiestMinute = findSleepiestMinute(minutesPerGuard.get(idGuardSleepiest)!);
-    console.log(sleepiestMinute * idGuardSleepiest);
+    const minutesAsleepPerGuard = computeMinutesAsleepPerGuard(minutesPerGuard);
+    console.log(minutesAsleepPerGuard);
+    findSleepiestMinuteForAllGuards(minutesAsleepPerGuard);
 }
 
 function sortGuardInfos(guardInfosUnordered: GuardInfo[]): GuardInfo[] {
@@ -80,39 +80,52 @@ function computeMinutesPerGuard(guardInfos: GuardInfo[]): Map<number, GuardTimeE
     return minutesPerGuard;
 }
 
-function findSleepiestGuard(minutesPerGuard: Map<number, GuardTimeEntry[]>): number {
+function computeMinutesAsleepPerGuard(minutesPerGuard: Map<number, GuardTimeEntry[]>): Map<number, number[]> {
+
+    let minutesAsleepPerGuard = new Map<number, number[]>();
+
+    minutesPerGuard.forEach((guardTimeEntries, guardId) => {
+        let minutesAsleep = new Array(60).fill(0);
+
+        guardTimeEntries.forEach((guardTimeEntry) => {
+            for (let i = guardTimeEntry.minuteStart; i < guardTimeEntry.minuteEnd; ++i) {
+                if (i > 59) {
+                    i = 0;
+                }
+                minutesAsleep[i] += 1;
+            }
+        });
+
+        minutesAsleepPerGuard.set(guardId, minutesAsleep);
+    });
+
+    return minutesAsleepPerGuard;
+}
+
+function findSleepiestMinuteForAllGuards(minutesAsleepPerGuard: Map<number, number[]>): void {
+
     let idGuardSleepiest = 0;
     let minutesAsleepMax = 0;
-    minutesPerGuard.forEach((guardTimeEntries, guardId) => {
-        const minutesAsleep = guardTimeEntries.reduce((minutesSum, guardTimeEntry) => {
-            let minutesSlept = guardTimeEntry.minuteEnd - guardTimeEntry.minuteStart;
-            if (minutesSlept < 0) {
-                minutesSlept += 60;
-            }
-            return minutesSum + minutesSlept;
-        }, 0);
-        if (minutesAsleep > minutesAsleepMax) {
-            minutesAsleepMax = minutesAsleep;
+    let indexMinutesAsleepMax = 0;
+
+    minutesAsleepPerGuard.forEach((minutesAsleep, guardId) => {
+        const minutesAsleepMaxLocal = Math.max(...minutesAsleep);
+        if (minutesAsleepMaxLocal > minutesAsleepMax) {
+            minutesAsleepMax = minutesAsleepMaxLocal;
+            indexMinutesAsleepMax = minutesAsleep.indexOf(minutesAsleepMaxLocal);
             idGuardSleepiest = guardId;
         }
     });
 
-    return idGuardSleepiest;
+
+
+    console.log(
+        'guard: ' +
+            idGuardSleepiest +
+            ', minutes: ' +
+            indexMinutesAsleepMax +
+            ', result: ' +
+            indexMinutesAsleepMax * idGuardSleepiest
+    );
 }
 
-function findSleepiestMinute(guardTimeEntries: GuardTimeEntry[]): number {
-
-    let minutesAsleep = new Array(60).fill(0);
-
-    guardTimeEntries.forEach((guardTimeEntry) => {
-        for (let i = guardTimeEntry.minuteStart; i < guardTimeEntry.minuteEnd; ++i) {
-            if (i > 59) {
-                i = 0;
-            }
-            minutesAsleep[i] += 1;
-        }
-    });
-
-    const indexMax = minutesAsleep.indexOf(Math.max(...minutesAsleep));
-    return indexMax;
-}
