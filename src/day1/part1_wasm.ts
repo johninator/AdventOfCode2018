@@ -1,24 +1,24 @@
-import * as fs from 'fs';
+// import * as fs from 'fs';
+import * as ModulePromise from './a.out.js';
+import { NumberReader, NumberArray } from '../reader/reader';
+const modulePromise = ModulePromise.default;
 
-const wasmBuffer = fs.readFileSync('add.wasm');
-WebAssembly.instantiate(wasmBuffer).then(wasmModule => {
-  // Exported function live under instance.exports
-  const { sayHi } = wasmModule.instance.exports;
-  console.log(sayHi());
+let addFunction: (a: number, b: number) => number;
+
+const reader = new NumberReader('../inputs/input1.txt');
+const numbers: NumberArray = reader.read();
+
+modulePromise().then((module: any) => {
+    function computeResult(numbers: NumberArray): number {
+        return numbers.numbers.reduce((sum, value) => {
+            return module.add(sum, value);
+        }, 0);
+    }
+    console.log(computeResult(numbers));
 });
 
 
 
 
 
-// import { NumberReader, NumberArray } from '../reader/reader';
 
-// const reader = new NumberReader('../inputs/input1.txt');
-// const numbers: NumberArray = reader.read();
-
-// function computeResult(numbers: NumberArray): number {
-//     return numbers.numbers.reduce((sum, value) => {
-//         return sum + value;
-//     }, 0);
-// }
-// console.log(computeResult(numbers));

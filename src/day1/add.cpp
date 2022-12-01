@@ -2,10 +2,10 @@
 
 using namespace emscripten;
 
-float sayHi() {
-    return 5;
+int add(int a, int b) {
+    return a + b;
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {
-    function("sayHi", &sayHi);
+    function("add", &add);
 }

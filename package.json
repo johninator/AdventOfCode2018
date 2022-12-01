@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "lint": "eslint . --ext ts"
+    "lint": "eslint . --ext ts",
+    "compile-wasm":  "emcc -lembind -sEXPORT_ALL=1 -sMODULARIZE=1"
 },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.25.0",
